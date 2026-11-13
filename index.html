@@ -124,8 +124,19 @@
         <textarea id="comment" name="comment" rows="3" placeholder="Сроки выполнения, условия оплаты и другие договорённости"></textarea>
       </section>
       <div class="document-actions">
-        <button id="save-pdf" class="primary-button" type="button">Сохранить PDF</button>
+        <button id="new-estimate" class="secondary-button" type="button">Новая смета</button>
+        <div class="export-actions">
+          <button id="copy-whatsapp" class="secondary-button" type="button">Скопировать для WhatsApp</button>
+          <button id="save-pdf" class="primary-button" type="button">Сохранить PDF</button>
+        </div>
       </div>
+      <p id="copy-status" class="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
+      <p id="draft-status" class="draft-status" role="status" hidden>Не удалось сохранить черновик. Сохраните PDF или скопируйте текст перед закрытием страницы.</p>
+      <section id="manual-copy" class="card manual-copy" aria-labelledby="manual-copy-heading" hidden>
+        <h2 id="manual-copy-heading"><label for="share-text">Текст для копирования</label></h2>
+        <p id="manual-copy-hint">Автоматическое копирование недоступно. Скопируйте выделенный текст вручную.</p>
+        <textarea id="share-text" rows="8" readonly aria-describedby="manual-copy-hint"></textarea>
+      </section>
       <p class="signature print-only">Подпись ____________________</p>
       <noscript><p class="noscript-message">Чтобы смета считалась автоматически, включите JavaScript в браузере.</p></noscript>
     </main>
