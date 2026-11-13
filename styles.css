@@ -278,11 +278,52 @@ td:last-child {
 }
 
 .total-card {
+  border-top: 3px solid var(--accent);
+}
+
+.calculation-settings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #edf0f2;
+}
+
+.totals-breakdown {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--muted);
+}
+
+.summary-row[hidden] {
+  display: none;
+}
+
+.summary-row output {
+  min-width: 0;
+  color: var(--text);
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+
+.grand-total-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  border-top: 3px solid var(--accent);
 }
 
 #grand-total {
@@ -505,7 +546,23 @@ td:last-child {
     font-size: 12px;
   }
 
-  .total-card {
+  .calculation-settings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .currency-field {
+    grid-column: 1 / -1;
+  }
+
+  .summary-row {
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .grand-total-row {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;

@@ -6,9 +6,20 @@
   const addButton = document.getElementById("add-position");
   const grandTotal = document.getElementById("grand-total");
   const dateInput = document.getElementById("estimate-date");
+  const discountInput = document.getElementById("discount-percent");
+  const vatInput = document.getElementById("vat-percent");
+  const currencyInput = document.getElementById("currency");
+  const currencyNote = document.getElementById("currency-note");
+  const subtotalOutput = document.getElementById("subtotal");
+  const discountOutput = document.getElementById("discount-amount");
+  const discountedOutput = document.getElementById("discounted-subtotal");
+  const vatOutput = document.getElementById("vat-amount");
+  const discountRow = document.getElementById("discount-row");
+  const discountedRow = document.getElementById("discounted-row");
+  const vatRow = document.getElementById("vat-row");
   const moneyFormatter = new Intl.NumberFormat("ru-RU", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   });
   let nextPositionId = 0;
 
@@ -24,30 +35,43 @@
     return Number.isFinite(number) ? number : 0;
   }
 
-  function lineCents(quantity, price) {
-    const amount = quantity * price;
-    // Складываем округлённые суммы строк в сотых, чтобы итог совпадал с ними.
-    const cents = Math.round((amount + Math.sign(amount) * Number.EPSILON) * 100);
-    return Number.isSafeInteger(cents) ? cents : 0;
+  function roundMoney(value) {
+    const amount = Math.round(value);
+    return Number.isSafeInteger(amount) && amount !== 0 ? amount : 0;
   }
 
-  function formatMoney(cents) {
-    const amount = Number.isFinite(cents) && cents !== 0 ? cents / 100 : 0;
-    return `${moneyFormatter.format(amount).replace(/[\u00a0\u202f]/g, " ")} ₸`;
+  function formatMoney(amount) {
+    const formatted = moneyFormatter.format(roundMoney(amount)).replace(/[\u00a0\u202f]/g, " ");
+    return `${formatted} ${currencyInput.value}`;
   }
 
   function recalculate() {
-    let totalCents = 0;
+    let subtotal = 0;
 
     for (const row of positionsBody.rows) {
       const quantity = readNumber(row.querySelector('[data-field="quantity"]').value);
       const price = readNumber(row.querySelector('[data-field="price"]').value);
-      const cents = lineCents(quantity, price);
-      row.querySelector(".line-total").textContent = formatMoney(cents);
-      totalCents += cents;
+      const amount = roundMoney(quantity * price);
+      row.querySelector(".line-total").textContent = formatMoney(amount);
+      subtotal += amount;
     }
 
-    const formattedTotal = formatMoney(totalCents);
+    // Каждый денежный шаг округляется до целых, чтобы строки итога сходились.
+    subtotal = roundMoney(subtotal);
+    const discount = roundMoney(subtotal * (readNumber(discountInput.value) / 100));
+    const discountedSubtotal = roundMoney(subtotal - discount);
+    const vat = roundMoney(discountedSubtotal * (readNumber(vatInput.value) / 100));
+
+    subtotalOutput.textContent = formatMoney(subtotal);
+    discountOutput.textContent = formatMoney(discount);
+    discountedOutput.textContent = formatMoney(discountedSubtotal);
+    vatOutput.textContent = formatMoney(vat);
+    discountRow.hidden = discount === 0;
+    discountedRow.hidden = discountedSubtotal === 0;
+    vatRow.hidden = vat === 0;
+    currencyNote.textContent = `Валюта: ${currencyInput.value}`;
+
+    const formattedTotal = formatMoney(roundMoney(discountedSubtotal + vat));
     if (grandTotal.textContent !== formattedTotal) {
       grandTotal.textContent = formattedTotal;
     }
@@ -85,6 +109,9 @@
   }
 
   addButton.addEventListener("click", () => addPosition());
+  discountInput.addEventListener("input", recalculate);
+  vatInput.addEventListener("input", recalculate);
+  currencyInput.addEventListener("change", recalculate);
 
   positionsBody.addEventListener("input", (event) => {
     if (event.target.matches('[data-field="quantity"], [data-field="price"]')) {
