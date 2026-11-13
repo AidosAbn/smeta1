@@ -17,9 +17,15 @@
   const discountRow = document.getElementById("discount-row");
   const discountedRow = document.getElementById("discounted-row");
   const vatRow = document.getElementById("vat-row");
+  const numberInput = document.getElementById("estimate-number");
+  const printTitle = document.getElementById("print-title");
+  const savePdfButton = document.getElementById("save-pdf");
   const moneyFormatter = new Intl.NumberFormat("ru-RU", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
+  });
+  const printNumberFormatter = new Intl.NumberFormat("ru-RU", {
+    maximumFractionDigits: 20,
   });
   let nextPositionId = 0;
 
@@ -88,6 +94,42 @@
     });
   }
 
+  function formatPrintDate(value) {
+    if (!value) {
+      return "";
+    }
+    const [year, month, day] = value.split("-");
+    return `${day}.${month}.${year}`;
+  }
+
+  function preparePrint() {
+    recalculate();
+    const number = numberInput.value.trim() || "____";
+    const date = formatPrintDate(dateInput.value) || "____";
+    printTitle.textContent = `Смета № ${number} от ${date}`;
+
+    // Текстовые копии позволяют печатать длинные значения без обрезки полями.
+    document.querySelectorAll(".details input, #positions-body input, #positions-body select, #comment").forEach((field) => {
+      let printValue = field.nextElementSibling;
+      if (!printValue || !printValue.classList.contains("print-value")) {
+        printValue = document.createElement("span");
+        printValue.className = "print-value print-only";
+        field.after(printValue);
+      }
+
+      let value = field.value;
+      if (field.type === "date") {
+        value = formatPrintDate(value);
+      } else if (field.dataset.field === "quantity" || field.dataset.field === "price") {
+        value = printNumberFormatter.format(readNumber(value)).replace(/[\u00a0\u202f]/g, " ");
+        if (field.dataset.field === "price") {
+          value += ` ${currencyInput.value}`;
+        }
+      }
+      printValue.textContent = value;
+    });
+  }
+
   function addPosition(focusName = true) {
     const row = positionTemplate.content.firstElementChild.cloneNode(true);
     const positionId = ++nextPositionId;
@@ -112,6 +154,11 @@
   discountInput.addEventListener("input", recalculate);
   vatInput.addEventListener("input", recalculate);
   currencyInput.addEventListener("change", recalculate);
+  savePdfButton.addEventListener("click", () => {
+    preparePrint();
+    window.print();
+  });
+  window.addEventListener("beforeprint", preparePrint);
 
   positionsBody.addEventListener("input", (event) => {
     if (event.target.matches('[data-field="quantity"], [data-field="price"]')) {

@@ -106,6 +106,7 @@ h2 {
 }
 
 input,
+textarea,
 select,
 button {
   min-width: 44px;
@@ -114,6 +115,7 @@ button {
 }
 
 input,
+textarea,
 select {
   width: 100%;
   padding: 11px 12px;
@@ -123,22 +125,25 @@ select {
   background: var(--surface);
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: #75838b;
   opacity: 1;
 }
 
 input:hover,
+textarea:hover,
 select:hover {
   border-color: #a9b9bf;
 }
 
 input:focus,
+textarea:focus,
 select:focus {
   border-color: var(--accent);
 }
 
-:where(input, select, button):focus-visible {
+:where(input, textarea, select, button):focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
@@ -341,6 +346,38 @@ td:last-child {
 .noscript-message {
   margin-top: 20px;
   color: var(--muted);
+}
+
+.comment-card textarea {
+  display: block;
+  min-height: 112px;
+  margin-top: 18px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.document-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.primary-button {
+  padding: 12px 24px;
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  color: #ffffff;
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.primary-button:hover {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+}
+
+.print-only {
+  display: none;
 }
 
 @media (max-width: 1000px) {
@@ -557,6 +594,10 @@ td:last-child {
     grid-column: 1 / -1;
   }
 
+  .document-actions .primary-button {
+    width: 100%;
+  }
+
   .summary-row {
     gap: 12px;
     font-size: 14px;
@@ -578,5 +619,254 @@ td:last-child {
 @media (max-width: 380px) {
   .details-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 16mm;
+}
+
+@media print {
+  :root,
+  body {
+    color: #000000;
+    background: #ffffff;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  .page {
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-header,
+  button,
+  .positions-actions,
+  .calculation-settings,
+  .document-actions,
+  .currency-note,
+  .positions-table .remove-column,
+  .positions-table th:last-child,
+  .position-row .remove-cell,
+  .table-field-label,
+  .mobile-amount-label,
+  .noscript-message {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .print-header {
+    margin-bottom: 7mm;
+    padding-bottom: 4mm;
+    border-bottom: 1pt solid #222222;
+  }
+
+  .print-header h1 {
+    font-size: 20pt;
+    line-height: 1.25;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .card + .card {
+    margin-top: 6mm;
+  }
+
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+  }
+
+  .details,
+  .total-card,
+  .comment-card {
+    break-inside: avoid;
+  }
+
+  .details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3mm 8mm;
+    margin-top: 3mm;
+  }
+
+  .details-grid .field:nth-child(-n + 2) {
+    grid-column: auto;
+  }
+
+  .field label {
+    margin-bottom: 1mm;
+    color: #555555;
+    font-size: 9pt;
+  }
+
+  input,
+  textarea,
+  select {
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .details input,
+  .positions-table input,
+  .positions-table select,
+  .comment-card textarea {
+    display: none;
+  }
+
+  .print-value {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .section-header {
+    display: block;
+    margin: 0 0 3mm;
+  }
+
+  .positions-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .positions-table colgroup {
+    display: table-column-group;
+  }
+
+  .positions-table thead {
+    display: table-header-group;
+  }
+
+  .positions-table tbody {
+    display: table-row-group;
+  }
+
+  .name-column {
+    width: 40%;
+  }
+
+  .quantity-column,
+  .unit-column {
+    width: 12%;
+  }
+
+  .price-column,
+  .amount-column {
+    width: 18%;
+  }
+
+  .position-row {
+    display: table-row;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    break-inside: avoid;
+  }
+
+  .position-row + .position-row {
+    margin-top: 0;
+  }
+
+  .positions-table th,
+  .position-row td {
+    display: table-cell;
+    padding: 2.5mm 2mm;
+    border: 0.6pt solid #777777;
+    color: #000000;
+    vertical-align: top;
+    font-size: 10pt;
+  }
+
+  .positions-table th {
+    background: #f2f2f2;
+    font-size: 9pt;
+    font-weight: 700;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .quantity-cell .print-value,
+  .price-cell .print-value,
+  .position-row .amount-cell {
+    text-align: right;
+  }
+
+  .line-total {
+    font-size: 10pt;
+    font-weight: 400;
+  }
+
+  .total-card {
+    width: 85mm;
+    max-width: 100%;
+    margin-left: auto;
+  }
+
+  .totals-breakdown {
+    gap: 2mm;
+    margin-bottom: 3mm;
+    padding-bottom: 3mm;
+    border-bottom: 0.6pt solid #777777;
+  }
+
+  .summary-row {
+    gap: 5mm;
+    color: #000000;
+    font-size: 10pt;
+  }
+
+  .summary-row output {
+    color: #000000;
+    font-weight: 400;
+  }
+
+  .grand-total-row {
+    align-items: baseline;
+    flex-direction: row;
+    gap: 4mm;
+  }
+
+  #grand-total {
+    width: auto;
+    color: #000000;
+    text-align: right;
+    font-size: 15pt;
+    letter-spacing: 0;
+  }
+
+  .comment-card .print-value {
+    margin-top: 2mm;
+  }
+
+  .signature {
+    margin-top: 12mm;
+    font-size: 11pt;
+    break-inside: avoid;
   }
 }

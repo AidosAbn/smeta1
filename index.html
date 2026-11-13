@@ -18,6 +18,10 @@
         </div>
       </header>
 
+      <header class="print-header print-only">
+        <h1 id="print-title">Смета</h1>
+      </header>
+
       <section class="card details" aria-labelledby="details-heading">
         <h2 id="details-heading">Реквизиты</h2>
         <div class="details-grid">
@@ -115,6 +119,14 @@
           <output id="grand-total" aria-labelledby="total-label" aria-live="polite" aria-atomic="true">0 ₸</output>
         </div>
       </section>
+      <section class="card comment-card" aria-labelledby="comment-heading">
+        <h2 id="comment-heading"><label for="comment">Комментарий</label></h2>
+        <textarea id="comment" name="comment" rows="3" placeholder="Сроки выполнения, условия оплаты и другие договорённости"></textarea>
+      </section>
+      <div class="document-actions">
+        <button id="save-pdf" class="primary-button" type="button">Сохранить PDF</button>
+      </div>
+      <p class="signature print-only">Подпись ____________________</p>
       <noscript><p class="noscript-message">Чтобы смета считалась автоматически, включите JavaScript в браузере.</p></noscript>
     </main>
 
