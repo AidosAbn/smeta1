@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
-    <title>Смета за 5 минут</title>
+    <title>Смета</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
   </head>
@@ -13,7 +13,7 @@
       <header class="page-header">
         <span class="brand-mark" aria-hidden="true">₸</span>
         <div>
-          <h1>Смета за 5 минут</h1>
+          <h1 id="estimate-title">Смета № 1</h1>
           <p class="intro">Заполните реквизиты и позиции — сумма посчитается автоматически.</p>
         </div>
       </header>
@@ -35,7 +35,7 @@
           </div>
           <div class="field">
             <label for="estimate-number">Номер сметы</label>
-            <input id="estimate-number" name="estimate-number" type="text" placeholder="Например, 001">
+            <input id="estimate-number" name="estimate-number" type="number" min="1" max="99" step="1" value="1">
           </div>
           <div class="field">
             <label for="estimate-date">Дата</label>

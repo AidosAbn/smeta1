@@ -19,6 +19,7 @@
   const discountedRow = document.getElementById("discounted-row");
   const vatRow = document.getElementById("vat-row");
   const numberInput = document.getElementById("estimate-number");
+  const estimateTitle = document.getElementById("estimate-title");
   const printTitle = document.getElementById("print-title");
   const savePdfButton = document.getElementById("save-pdf");
   const newEstimateButton = document.getElementById("new-estimate");
@@ -241,8 +242,10 @@
   }
 
   function preparePrint() {
+    normalizeEstimateNumber();
+    saveDraft();
     recalculate();
-    const number = numberInput.value.trim() || "____";
+    const number = getEstimateNumber();
     const date = formatPrintDate(dateInput.value) || "____";
     printTitle.textContent = `Смета № ${number} от ${date}`;
 
@@ -291,13 +294,18 @@
     return row;
   }
 
-  function nextEstimateNumber(value) {
-    const match = value.trim().match(/^(.*?)(\d+)$/);
-    if (!match) {
-      return "1";
-    }
-    const nextNumber = (BigInt(match[2]) + 1n).toString().padStart(match[2].length, "0");
-    return `${match[1]}${nextNumber}`;
+  function getEstimateNumber() {
+    const number = Number(numberInput.value);
+    return Number.isInteger(number) && number >= 1 && number <= 99 ? number : 1;
+  }
+
+  function updateEstimateTitle() {
+    estimateTitle.textContent = `Смета № ${getEstimateNumber()}`;
+  }
+
+  function normalizeEstimateNumber() {
+    numberInput.value = String(getEstimateNumber());
+    updateEstimateTitle();
   }
 
   function newEstimate() {
@@ -305,7 +313,7 @@
       return;
     }
 
-    const number = nextEstimateNumber(numberInput.value);
+    const number = String(getEstimateNumber() % 99 + 1);
     pauseDraftSaving = true;
     draftFields.forEach((field) => {
       if (field.tagName === "SELECT") {
@@ -315,6 +323,7 @@
       }
     });
     numberInput.value = number;
+    updateEstimateTitle();
     setToday();
     positionsBody.replaceChildren();
     document.querySelectorAll(".print-value").forEach((value) => value.remove());
@@ -327,7 +336,7 @@
 
   function buildShareText() {
     recalculate();
-    const number = numberInput.value.trim() || "____";
+    const number = getEstimateNumber();
     const date = formatPrintDate(dateInput.value) || "____";
     const lines = [`Смета № ${number} от ${date}`];
 
@@ -409,6 +418,8 @@
   discountInput.addEventListener("input", recalculate);
   vatInput.addEventListener("input", recalculate);
   currencyInput.addEventListener("change", recalculate);
+  numberInput.addEventListener("input", updateEstimateTitle);
+  numberInput.addEventListener("change", normalizeEstimateNumber);
   newEstimateButton.addEventListener("click", newEstimate);
   copyButton.addEventListener("click", copyForWhatsApp);
   document.querySelector(".page").addEventListener("input", handleDraftChange);
@@ -465,6 +476,7 @@
   if (!restoreDraft()) {
     addPosition(false);
   }
+  normalizeEstimateNumber();
   pauseDraftSaving = false;
   saveDraft();
 })();
