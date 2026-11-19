@@ -25,18 +25,22 @@
   const newEstimateButton = document.getElementById("new-estimate");
   const clearEstimateButton = document.getElementById("clear-estimate");
   const languageButton = document.getElementById("language-toggle");
+  const themeButton = document.getElementById("theme-toggle");
   const copyButton = document.getElementById("copy-whatsapp");
   const copyStatus = document.getElementById("copy-status");
   const draftStatus = document.getElementById("draft-status");
   const manualCopy = document.getElementById("manual-copy");
   const shareText = document.getElementById("share-text");
   const draftKey = "smeta:draft:v1";
+  const themeKey = "smeta:theme:v1";
   const translations = {
     ru: {
       estimate: "Смета",
       estimateTitle: "Смета № {number}",
       documentTitle: "Смета № {number} от {date}",
       switchLanguage: "Переключить на казахский язык",
+      switchToDarkTheme: "Включить тёмную тему",
+      switchToLightTheme: "Включить светлую тему",
       intro: "Заполните реквизиты и позиции — сумма посчитается автоматически.",
       details: "Реквизиты",
       sender: "От кого",
@@ -91,6 +95,8 @@
       estimateTitle: "Смета № {number}",
       documentTitle: "Смета № {number}, күні: {date}",
       switchLanguage: "Орыс тіліне ауысу",
+      switchToDarkTheme: "Қараңғы тақырыпты қосу",
+      switchToLightTheme: "Жарық тақырыпты қосу",
       intro: "Деректемелер мен позицияларды толтырыңыз — сома автоматты түрде есептеледі.",
       details: "Деректемелер",
       sender: "Кімнен",
@@ -154,12 +160,43 @@
   });
   let nextPositionId = 0;
   let language = "ru";
+  let theme = "light";
   let pauseDraftSaving = true;
   let copyTimer;
   let copyRequest = 0;
 
   function t(key, values = {}) {
     return translations[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
+  }
+
+  function updateThemeButton() {
+    const label = t(theme === "dark" ? "switchToLightTheme" : "switchToDarkTheme");
+    themeButton.setAttribute("aria-label", label);
+    themeButton.title = label;
+  }
+
+  function applyTheme() {
+    document.documentElement.dataset.theme = theme;
+    updateThemeButton();
+  }
+
+  function restoreTheme() {
+    try {
+      theme = localStorage.getItem(themeKey) === "dark" ? "dark" : "light";
+    } catch {
+      theme = "light";
+    }
+    applyTheme();
+  }
+
+  function toggleTheme() {
+    theme = theme === "light" ? "dark" : "light";
+    applyTheme();
+    try {
+      localStorage.setItem(themeKey, theme);
+    } catch {
+      // Переключение работает и при недоступном хранилище браузера.
+    }
   }
 
   function translateElements(root) {
@@ -186,6 +223,7 @@
     languageButton.lang = language === "ru" ? "kk" : "ru";
     languageButton.setAttribute("aria-label", t("switchLanguage"));
     languageButton.title = t("switchLanguage");
+    updateThemeButton();
     translateElements(document);
     translateElements(positionTemplate.content);
     updateRowLabels();
@@ -490,8 +528,9 @@
   }
 
   function getEstimateNumber() {
-    const number = Number(numberInput.value);
-    return Number.isInteger(number) && number >= 1 && number <= 99 ? number : 1;
+    const value = numberInput.value.trim();
+    const number = Number(value);
+    return value !== "" && Number.isInteger(number) && number >= 1 && number <= 99 ? number : 1;
   }
 
   function updateEstimateTitle() {
@@ -510,8 +549,11 @@
     updateEstimateTitle();
   }
 
-  function resetEstimateNumber() {
+  function clearEstimateValues() {
     numberInput.value = "1";
+    positionsBody.querySelectorAll('[data-field="quantity"], [data-field="price"]').forEach((field) => {
+      field.value = "0";
+    });
     preparePrint();
     clearCopyFeedback();
   }
@@ -627,8 +669,9 @@
   numberInput.addEventListener("input", updateEstimateTitle);
   numberInput.addEventListener("change", normalizeEstimateNumber);
   newEstimateButton.addEventListener("click", newEstimate);
-  clearEstimateButton.addEventListener("click", resetEstimateNumber);
+  clearEstimateButton.addEventListener("click", clearEstimateValues);
   languageButton.addEventListener("click", toggleLanguage);
+  themeButton.addEventListener("click", toggleTheme);
   copyButton.addEventListener("click", copyForWhatsApp);
   document.querySelector(".page").addEventListener("input", handleDraftChange);
   document.querySelector(".page").addEventListener("change", handleDraftChange);
@@ -680,6 +723,7 @@
     clearCopyFeedback();
   });
 
+  restoreTheme();
   setToday();
   if (!restoreDraft()) {
     addPosition(false);

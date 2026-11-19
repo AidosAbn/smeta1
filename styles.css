@@ -39,8 +39,27 @@ body {
 
 .language-toolbar {
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   justify-content: flex-end;
+  gap: 8px;
   margin-bottom: 16px;
+}
+
+.secondary-button.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+}
+
+.theme-icon {
+  display: block;
+}
+
+.theme-icon-sun {
+  display: none;
 }
 
 .brand-mark {
@@ -703,6 +722,59 @@ td:last-child {
 @media (max-width: 380px) {
   .details-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --background: #2F4F4F;
+    --surface: #365b5b;
+    --text: #ffffff;
+    --muted: #ffffff;
+    --border: #719393;
+    --accent: #ffffff;
+    --accent-hover: #ffffff;
+    --accent-soft: #3d6565;
+  }
+
+  :root[data-theme="dark"] .theme-icon-moon {
+    display: none;
+  }
+
+  :root[data-theme="dark"] .theme-icon-sun {
+    display: block;
+  }
+
+  :root[data-theme="dark"] input::placeholder,
+  :root[data-theme="dark"] textarea::placeholder {
+    color: #ffffff;
+  }
+
+  :root[data-theme="dark"] option {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  :root[data-theme="dark"] .position-row {
+    background: var(--surface);
+  }
+
+  :root[data-theme="dark"] td,
+  :root[data-theme="dark"] .calculation-settings,
+  :root[data-theme="dark"] .brand-mark,
+  :root[data-theme="dark"] .add-button {
+    border-color: var(--border);
+  }
+
+  :root[data-theme="dark"] .primary-button {
+    background: var(--accent-soft);
+  }
+
+  :root[data-theme="dark"] .add-button:hover,
+  :root[data-theme="dark"] .primary-button:hover,
+  :root[data-theme="dark"] .secondary-button:hover {
+    background: #456e6e;
   }
 }
 
