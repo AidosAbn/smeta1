@@ -23,6 +23,7 @@
   const printTitle = document.getElementById("print-title");
   const savePdfButton = document.getElementById("save-pdf");
   const newEstimateButton = document.getElementById("new-estimate");
+  const clearEstimateButton = document.getElementById("clear-estimate");
   const copyButton = document.getElementById("copy-whatsapp");
   const copyStatus = document.getElementById("copy-status");
   const draftStatus = document.getElementById("draft-status");
@@ -308,6 +309,12 @@
     updateEstimateTitle();
   }
 
+  function resetEstimateNumber() {
+    numberInput.value = "1";
+    preparePrint();
+    clearCopyFeedback();
+  }
+
   function newEstimate() {
     if (!window.confirm("Создать новую смету? Текущий черновик будет очищен.")) {
       return;
@@ -421,6 +428,7 @@
   numberInput.addEventListener("input", updateEstimateTitle);
   numberInput.addEventListener("change", normalizeEstimateNumber);
   newEstimateButton.addEventListener("click", newEstimate);
+  clearEstimateButton.addEventListener("click", resetEstimateNumber);
   copyButton.addEventListener("click", copyForWhatsApp);
   document.querySelector(".page").addEventListener("input", handleDraftChange);
   document.querySelector(".page").addEventListener("change", handleDraftChange);

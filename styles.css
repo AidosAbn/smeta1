@@ -372,6 +372,7 @@ td:last-child {
   margin-top: 20px;
 }
 
+.estimate-actions,
 .export-actions {
   display: flex;
   flex-wrap: wrap;
