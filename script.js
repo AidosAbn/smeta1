@@ -24,12 +24,123 @@
   const savePdfButton = document.getElementById("save-pdf");
   const newEstimateButton = document.getElementById("new-estimate");
   const clearEstimateButton = document.getElementById("clear-estimate");
+  const languageButton = document.getElementById("language-toggle");
   const copyButton = document.getElementById("copy-whatsapp");
   const copyStatus = document.getElementById("copy-status");
   const draftStatus = document.getElementById("draft-status");
   const manualCopy = document.getElementById("manual-copy");
   const shareText = document.getElementById("share-text");
   const draftKey = "smeta:draft:v1";
+  const translations = {
+    ru: {
+      estimate: "Смета",
+      estimateTitle: "Смета № {number}",
+      documentTitle: "Смета № {number} от {date}",
+      switchLanguage: "Переключить на казахский язык",
+      intro: "Заполните реквизиты и позиции — сумма посчитается автоматически.",
+      details: "Реквизиты",
+      sender: "От кого",
+      senderPlaceholder: "Ваше имя или компания",
+      recipient: "Для кого",
+      recipientPlaceholder: "Имя или компания клиента",
+      estimateNumber: "Номер сметы",
+      date: "Дата",
+      positions: "Позиции",
+      name: "Наименование",
+      namePlaceholder: "Название товара или услуги",
+      quantity: "Количество",
+      unit: "Единица",
+      price: "Цена",
+      amount: "Сумма",
+      removal: "Удаление",
+      addPosition: "+ Добавить позицию",
+      keyboardHint: "Enter в последней строке — новая позиция",
+      discountPercent: "Скидка, %",
+      vatPercent: "НДС, %",
+      currency: "Валюта",
+      currencyNote: "Валюта: {currency}",
+      discount: "Скидка",
+      discountedAmount: "Сумма со скидкой",
+      vat: "НДС",
+      total: "Итого к оплате",
+      amountInWords: "Сумма прописью: {words}",
+      comment: "Комментарий",
+      commentPlaceholder: "Сроки выполнения, условия оплаты и другие договорённости",
+      newEstimate: "Новая смета",
+      clear: "Очистить",
+      copyWhatsApp: "Скопировать для WhatsApp",
+      savePdf: "Сохранить PDF",
+      draftError: "Не удалось сохранить черновик. Сохраните PDF или скопируйте текст перед закрытием страницы.",
+      copyText: "Текст для копирования",
+      manualCopyHint: "Автоматическое копирование недоступно. Скопируйте выделенный текст вручную.",
+      signature: "Подпись ____________________",
+      noscript: "Чтобы смета считалась автоматически, включите JavaScript в браузере.",
+      unitPiece: "шт",
+      unitHour: "час",
+      unitService: "услуга",
+      itemNumber: " позиции {number}",
+      lineTotalLabel: "Сумма позиции {number}",
+      removePosition: "Удалить позицию",
+      removePositionLabel: "Удалить позицию {number}",
+      confirmNew: "Создать новую смету? Текущий черновик будет очищен.",
+      unnamed: "Без наименования",
+      copied: "Скопировано ✓",
+    },
+    kk: {
+      estimate: "Смета",
+      estimateTitle: "Смета № {number}",
+      documentTitle: "Смета № {number}, күні: {date}",
+      switchLanguage: "Орыс тіліне ауысу",
+      intro: "Деректемелер мен позицияларды толтырыңыз — сома автоматты түрде есептеледі.",
+      details: "Деректемелер",
+      sender: "Кімнен",
+      senderPlaceholder: "Атыңыз немесе компанияңыз",
+      recipient: "Кімге",
+      recipientPlaceholder: "Клиенттің аты немесе компаниясы",
+      estimateNumber: "Смета нөмірі",
+      date: "Күні",
+      positions: "Позициялар",
+      name: "Атауы",
+      namePlaceholder: "Тауардың немесе қызметтің атауы",
+      quantity: "Саны",
+      unit: "Өлшем бірлігі",
+      price: "Бағасы",
+      amount: "Сома",
+      removal: "Жою",
+      addPosition: "+ Позиция қосу",
+      keyboardHint: "Соңғы жолда Enter басу — жаңа позиция қосу",
+      discountPercent: "Жеңілдік, %",
+      vatPercent: "ҚҚС, %",
+      currency: "Валюта",
+      currencyNote: "Валюта: {currency}",
+      discount: "Жеңілдік",
+      discountedAmount: "Жеңілдіктен кейінгі сома",
+      vat: "ҚҚС",
+      total: "Төлеуге барлығы",
+      amountInWords: "Сома жазумен: {words}",
+      comment: "Түсініктеме",
+      commentPlaceholder: "Орындау мерзімі, төлем шарттары және басқа келісімдер",
+      newEstimate: "Жаңа смета",
+      clear: "Тазарту",
+      copyWhatsApp: "WhatsApp үшін көшіру",
+      savePdf: "PDF сақтау",
+      draftError: "Нобайды сақтау мүмкін болмады. Бетті жаппас бұрын PDF сақтаңыз немесе мәтінді көшіріңіз.",
+      copyText: "Көшіруге арналған мәтін",
+      manualCopyHint: "Автоматты түрде көшіру қолжетімсіз. Белгіленген мәтінді қолмен көшіріңіз.",
+      signature: "Қолы ____________________",
+      noscript: "Смета автоматты түрде есептелуі үшін браузерде JavaScript қосыңыз.",
+      unitPiece: "дана",
+      unitHour: "сағат",
+      unitService: "қызмет",
+      itemNumber: " № {number}",
+      lineTotalLabel: "{number}-позицияның сомасы",
+      removePosition: "Позицияны жою",
+      removePositionLabel: "{number}-позицияны жою",
+      confirmNew: "Жаңа смета жасау керек пе? Ағымдағы нобай өшіріледі.",
+      unnamed: "Атауы жоқ",
+      copied: "Көшірілді ✓",
+    },
+  };
   const draftFields = [
     "sender", "recipient", "estimate-number", "estimate-date",
     "discount-percent", "vat-percent", "currency", "comment",
@@ -42,9 +153,58 @@
     maximumFractionDigits: 20,
   });
   let nextPositionId = 0;
+  let language = "ru";
   let pauseDraftSaving = true;
   let copyTimer;
   let copyRequest = 0;
+
+  function t(key, values = {}) {
+    return translations[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
+  }
+
+  function translateElements(root) {
+    for (const [attribute, target] of [
+      ["data-i18n", "textContent"],
+      ["data-i18n-placeholder", "placeholder"],
+      ["data-i18n-title", "title"],
+    ]) {
+      root.querySelectorAll(`[${attribute}]`).forEach((element) => {
+        const text = t(element.getAttribute(attribute));
+        if (target === "textContent") {
+          element.textContent = text;
+        } else {
+          element.setAttribute(target, text);
+        }
+      });
+    }
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = language;
+    document.title = t("estimate");
+    languageButton.textContent = language === "ru" ? "Қаз" : "Ру";
+    languageButton.lang = language === "ru" ? "kk" : "ru";
+    languageButton.setAttribute("aria-label", t("switchLanguage"));
+    languageButton.title = t("switchLanguage");
+    translateElements(document);
+    translateElements(positionTemplate.content);
+    updateRowLabels();
+    updateEstimateTitle();
+    recalculate();
+    printTitle.textContent = getDocumentTitle();
+  }
+
+  function toggleLanguage() {
+    language = language === "ru" ? "kk" : "ru";
+    clearCopyFeedback();
+    applyLanguage();
+    preparePrint();
+  }
+
+  function formatUnit(value) {
+    const key = { "шт": "unitPiece", "час": "unitHour", "услуга": "unitService" }[value];
+    return key ? t(key) : value;
+  }
 
   function readNumber(value) {
     const normalized = value.trim().replace(/[ \u00a0\u202f]/g, "").replace(",", ".");
@@ -75,6 +235,9 @@
   function spellAmount(amount) {
     if (!Number.isInteger(amount) || amount < 1 || amount > 999999999) {
       return "";
+    }
+    if (language === "kk") {
+      return spellKazakhAmount(amount);
     }
 
     const units = ["", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"];
@@ -115,6 +278,35 @@
     return text[0].toUpperCase() + text.slice(1);
   }
 
+  function spellKazakhAmount(amount) {
+    const units = ["", "бір", "екі", "үш", "төрт", "бес", "алты", "жеті", "сегіз", "тоғыз"];
+    const tens = ["", "он", "жиырма", "отыз", "қырық", "елу", "алпыс", "жетпіс", "сексен", "тоқсан"];
+    const groups = [
+      { value: Math.floor(amount / 1000000), name: "миллион" },
+      { value: Math.floor(amount / 1000) % 1000, name: "мың" },
+      { value: amount % 1000, name: "" },
+    ];
+    const words = [];
+
+    for (const group of groups) {
+      if (group.value === 0) {
+        continue;
+      }
+      const hundreds = Math.floor(group.value / 100);
+      if (hundreds > 0) {
+        if (hundreds > 1) {
+          words.push(units[hundreds]);
+        }
+        words.push("жүз");
+      }
+      words.push(tens[Math.floor(group.value / 10) % 10], units[group.value % 10], group.name);
+    }
+
+    words.push("теңге");
+    const text = words.filter(Boolean).join(" ");
+    return text[0].toUpperCase() + text.slice(1);
+  }
+
   function setToday() {
     // Локальная дата браузера: UTC может указывать на предыдущий день.
     const today = new Date();
@@ -130,6 +322,7 @@
 
     const draft = {
       version: 1,
+      language,
       fields: Object.fromEntries(draftFields.map((field) => [field.id, field.value])),
       positions: Array.from(positionsBody.rows, (row) => Object.fromEntries(
         Array.from(row.querySelectorAll("[data-field]"), (field) => [field.dataset.field, field.value])
@@ -167,6 +360,7 @@
       return false;
     }
 
+    language = draft.language === "kk" ? "kk" : "ru";
     draftFields.forEach((field) => setFieldValue(field, draft.fields[field.id]));
     draft.positions.forEach((position) => {
       if (position && typeof position === "object" && !Array.isArray(position)) {
@@ -211,7 +405,7 @@
     discountRow.hidden = discount === 0;
     discountedRow.hidden = discountedSubtotal === 0;
     vatRow.hidden = vat === 0;
-    currencyNote.textContent = `Валюта: ${currencyInput.value}`;
+    currencyNote.textContent = t("currencyNote", { currency: currencyInput.value });
 
     const total = roundMoney(discountedSubtotal + vat);
     const formattedTotal = formatMoney(total);
@@ -220,17 +414,17 @@
     }
     const words = currencyInput.value === "₸" ? spellAmount(total) : "";
     amountInWords.hidden = words === "";
-    amountInWords.textContent = words ? `Сумма прописью: ${words}` : "";
+    amountInWords.textContent = words ? t("amountInWords", { words }) : "";
   }
 
   function updateRowLabels() {
     Array.from(positionsBody.rows).forEach((row, index) => {
       const number = index + 1;
       row.querySelectorAll(".item-number").forEach((label) => {
-        label.textContent = ` позиции ${number}`;
+        label.textContent = t("itemNumber", { number });
       });
-      row.querySelector(".line-total").setAttribute("aria-label", `Сумма позиции ${number}`);
-      row.querySelector(".remove-button").setAttribute("aria-label", `Удалить позицию ${number}`);
+      row.querySelector(".line-total").setAttribute("aria-label", t("lineTotalLabel", { number }));
+      row.querySelector(".remove-button").setAttribute("aria-label", t("removePositionLabel", { number }));
     });
   }
 
@@ -246,9 +440,7 @@
     normalizeEstimateNumber();
     saveDraft();
     recalculate();
-    const number = getEstimateNumber();
-    const date = formatPrintDate(dateInput.value) || "____";
-    printTitle.textContent = `Смета № ${number} от ${date}`;
+    printTitle.textContent = getDocumentTitle();
 
     // Текстовые копии позволяют печатать длинные значения без обрезки полями.
     document.querySelectorAll(".details input, #positions-body input, #positions-body select, #comment").forEach((field) => {
@@ -262,6 +454,8 @@
       let value = field.value;
       if (field.type === "date") {
         value = formatPrintDate(value);
+      } else if (field.tagName === "SELECT") {
+        value = field.selectedOptions[0].textContent;
       } else if (field.dataset.field === "quantity" || field.dataset.field === "price") {
         value = formatNumber(value);
         if (field.dataset.field === "price") {
@@ -301,7 +495,14 @@
   }
 
   function updateEstimateTitle() {
-    estimateTitle.textContent = `Смета № ${getEstimateNumber()}`;
+    estimateTitle.textContent = t("estimateTitle", { number: getEstimateNumber() });
+  }
+
+  function getDocumentTitle() {
+    return t("documentTitle", {
+      number: getEstimateNumber(),
+      date: formatPrintDate(dateInput.value) || "____",
+    });
   }
 
   function normalizeEstimateNumber() {
@@ -316,7 +517,7 @@
   }
 
   function newEstimate() {
-    if (!window.confirm("Создать новую смету? Текущий черновик будет очищен.")) {
+    if (!window.confirm(t("confirmNew"))) {
       return;
     }
 
@@ -334,7 +535,7 @@
     setToday();
     positionsBody.replaceChildren();
     document.querySelectorAll(".print-value").forEach((value) => value.remove());
-    printTitle.textContent = "Смета";
+    printTitle.textContent = getDocumentTitle();
     addPosition(false);
     pauseDraftSaving = false;
     saveDraft();
@@ -343,14 +544,12 @@
 
   function buildShareText() {
     recalculate();
-    const number = getEstimateNumber();
-    const date = formatPrintDate(dateInput.value) || "____";
-    const lines = [`Смета № ${number} от ${date}`];
+    const lines = [getDocumentTitle()];
 
-    for (const [id, label] of [["sender", "От кого"], ["recipient", "Для кого"]]) {
+    for (const id of ["sender", "recipient"]) {
       const value = document.getElementById(id).value.trim();
       if (value) {
-        lines.push(`${label}: ${value}`);
+        lines.push(`${t(id)}: ${value}`);
       }
     }
     lines.push("");
@@ -359,32 +558,32 @@
       const name = row.querySelector('[data-field="name"]').value.trim();
       const quantity = row.querySelector('[data-field="quantity"]').value;
       const price = row.querySelector('[data-field="price"]').value;
-      const unit = row.querySelector('[data-field="unit"]').value;
+      const unit = formatUnit(row.querySelector('[data-field="unit"]').value);
       if (!name && !quantity.trim() && !price.trim()) {
         continue;
       }
       const amount = row.querySelector(".line-total").textContent;
-      lines.push(`• ${name || "Без наименования"} — ${formatNumber(quantity)} ${unit} × ${formatNumber(price)} ${currencyInput.value} = ${amount}`);
+      lines.push(`• ${name || t("unnamed")} — ${formatNumber(quantity)} ${unit} × ${formatNumber(price)} ${currencyInput.value} = ${amount}`);
     }
 
-    lines.push("", `Сумма: ${subtotalOutput.textContent}`);
+    lines.push("", `${t("amount")}: ${subtotalOutput.textContent}`);
     if (!discountRow.hidden) {
-      lines.push(`Скидка: ${discountOutput.textContent}`);
+      lines.push(`${t("discount")}: ${discountOutput.textContent}`);
       if (!discountedRow.hidden) {
-        lines.push(`Сумма со скидкой: ${discountedOutput.textContent}`);
+        lines.push(`${t("discountedAmount")}: ${discountedOutput.textContent}`);
       }
     }
     if (!vatRow.hidden) {
-      lines.push(`НДС: ${vatOutput.textContent}`);
+      lines.push(`${t("vat")}: ${vatOutput.textContent}`);
     }
-    lines.push(`Итого к оплате: ${grandTotal.textContent}`);
+    lines.push(`${t("total")}: ${grandTotal.textContent}`);
     if (!amountInWords.hidden) {
       lines.push(amountInWords.textContent);
     }
 
     const comment = document.getElementById("comment").value.trim();
     if (comment) {
-      lines.push("", `Комментарий: ${comment}`);
+      lines.push("", `${t("comment")}: ${comment}`);
     }
     return lines.join("\n");
   }
@@ -398,7 +597,7 @@
       if (request !== copyRequest) {
         return;
       }
-      copyStatus.textContent = "Скопировано ✓";
+      copyStatus.textContent = t("copied");
       copyTimer = setTimeout(() => {
         copyStatus.textContent = "";
       }, 2000);
@@ -429,6 +628,7 @@
   numberInput.addEventListener("change", normalizeEstimateNumber);
   newEstimateButton.addEventListener("click", newEstimate);
   clearEstimateButton.addEventListener("click", resetEstimateNumber);
+  languageButton.addEventListener("click", toggleLanguage);
   copyButton.addEventListener("click", copyForWhatsApp);
   document.querySelector(".page").addEventListener("input", handleDraftChange);
   document.querySelector(".page").addEventListener("change", handleDraftChange);
@@ -485,6 +685,7 @@
     addPosition(false);
   }
   normalizeEstimateNumber();
+  applyLanguage();
   pauseDraftSaving = false;
   saveDraft();
 })();

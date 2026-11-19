@@ -37,6 +37,12 @@ body {
   margin-bottom: 32px;
 }
 
+.language-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 .brand-mark {
   display: grid;
   place-items: center;
@@ -725,6 +731,7 @@ td:last-child {
   }
 
   .page-header,
+  .language-toolbar,
   button,
   .positions-actions,
   .calculation-settings,
