@@ -1031,8 +1031,23 @@ td:last-child {
   }
 
   .signature {
+    display: flex;
+    align-items: center;
+    gap: 3mm;
     margin-top: 12mm;
     font-size: 11pt;
     break-inside: avoid;
+  }
+
+  .signature span {
+    white-space: nowrap;
+  }
+
+  .signature-stamp {
+    display: block;
+    flex: 0 0 auto;
+    width: 40mm;
+    height: 40mm;
+    object-fit: contain;
   }
 }
